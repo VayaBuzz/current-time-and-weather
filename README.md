@@ -8,7 +8,7 @@ Given array of inputs (location name, postal code, etc.), log current time and w
 ```javascript
 "./weather New York, 10005, Tokyo, São Paulo, Pluto"
 ```
-##### Notes
+##### Notes on Input
 - Input file array may contain extraneous text such as "./weather cityname" rather than just "cityname"
   - This program will do its best to filter out extraneous text.
 
@@ -26,7 +26,7 @@ São Paulo   01:28 PM   Mostly sunny
 Pluto       Unknown    Probably OK
 ```
 
-##### Notes
+##### Notes on Output
 Obviously a very long cityname would screw up the above text alignment.
 
 In such a scenario, the time and weather columns will shift to the right as needed to make room.
