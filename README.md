@@ -7,14 +7,14 @@ Given array of inputs (location name, postal code, etc.), log current time and w
 "./weather New York, 10005, Tokyo, São Paulo, Pluto"
 ```
 ##### Notes
-Input file array may contain extraneous text such as "./weather cityname" rather than just "cityname"
-This program will do its best to filter out extraneous text.
+- Input file array may contain extraneous text such as "./weather cityname" rather than just "cityname"
+  - This program will do its best to filter out extraneous text.
 
-Input file array may contain non-earth locations such as "Saturn"
-This program will do its best to maintain a sense of humor.
+- Input file array may contain non-earth locations such as "Saturn"
+  - This program will do its best to maintain a sense of humor.
 
 ### Expected Output (to console)
-```javascript
+```
 Location:   Time:      Weather:
 ----------------------------------------
 New York    12:26 PM   Sunny
