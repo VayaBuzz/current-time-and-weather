@@ -1,54 +1,85 @@
-// 
-//  invisibleEmail.js
-// 
-// Given an array of inputs (location name, postal code), 
-// log the current time and weather for those locations.
-// Example: "./weather New York, 10005, Tokyo, São Paulo, Pluto"
-// 
-// We'll make this a functional program.
-// Each function should:
-// have a single responsibility,
-// give consistent results for consistent input,
-// have no side-effects (unintentional modification of other parts of the program).
+/*
+  invisibleEmail.js
+ 
+ Given an array of inputs (location name, postal code), 
+ log the current time and weather for those locations.
+ 
+ Example Input:
+ "./weather New York, 10005, Tokyo, São Paulo, Pluto, Dallas"
+ 
+ Example Output: 
+Location:      Time:   Weather:
+----------------------------------------
+New York       02:05   Clear
+New York       02:05   Clear
+Tokyo          15:05   Partly cloudy
+San Paulo      03:05   Partly cloudy
+Pluto          14:05   Partly cloudy
+Dallas         01:05   Clear
+*/
 
-// High level overview of the functions we probably need:
-// 
-// * main program (should cleanly exit at any stage if things go awry.)
-//      accept input array
-// * validateInput(): throw error if input is not an array of strings
-// * cleanInput(): cherry picks bad data out of the individual strings such as ".\" or "weather"
-// * createConnectionString(): based on values of the array.
-// * fetchTimeAndWeather(): attempt connection to weather API
-//      if API not available, throw error
-// * receive result from weather API
-//      if unexpected result, throw error
-// * parseWeatherResult(): parse result into just the info we need, a time/temp array.
-// * alignResults(): pad spacing into the array strings so they would align nicely when printed.
-// * displayResults(): run output function to display time/temp array
-// 
-// exit.
+//////////////////////////////////////////////////////////////////////////////////////////
+showWeatherData = (urls) => {
+  
+  let requests = urls.map(url => fetch(url));
+  
+  Promise.all(requests)
+  .then(responses => Promise.all(responses.map(r => r.json())))
+  .then(locations => {
+    const PAD_SPACES_LOCATION = 15;
+    const PAD_SPACES_TIME = 8;
+    console.log("Location:".padEnd(PAD_SPACES_LOCATION) + "Time:".padEnd(PAD_SPACES_TIME) + "Weather:");
+    console.log("----------------------------------------");
+    locations.forEach(city => {
+      let n = city.location.name.padEnd(PAD_SPACES_LOCATION);
+      let t = city.location.localtime.slice(-5).padEnd(PAD_SPACES_TIME);
+      let w = city.current.weather_descriptions[0]
+      console.log(n + t + w);
+    })
+    
+  });
+
+};
 
 
-function validateInput(x) {
+//////////////////////////////////////////////////////////////////////////////////////////
+createConnectionString = (location) => {
+  // input:  a location  (city or zip code ok)
+  // output: a http request asking for time and weather
+
+  let weatherSite = "http://api.weatherstack.com/current?access_key="
+  let apiKey = "9f59818a7e6182f67ad39a639c3c11a0" // quick, but not secure!
+  let requestString = weatherSite  + apiKey + "&query=" + location;
+  return requestString;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+allArrayItemsAreStrings = (x) => {
   return x.every(function(i){ return typeof i === "string" });
 }
 
-main = (locationArray) => {
-  console.log('main function');
-  console.log(locationArray);
 
-  // validate we have an arry of only strings as input
-  if (!(validateInput(locationArray))){
+//////////////////////////////////////////////////////////////////////////////////////////
+main = (locationArray) => {
+
+  if (!(allArrayItemsAreStrings(locationArray))){
     console.log("Error: Sorry, please input an array conatining only strings");
     return;
   }
+
+  const connectionStrings = locationArray.map(createConnectionString);
+
+  showWeatherData(connectionStrings);
+ 
 }
 
 
 // 
 //  Test out our code and see what happens
 //  
-let sampleData = ["./weather New York", "10005", "Tokyo", "São Paulo", "Pluto"];
+let sampleData = ["./weather New York", "10005", "Tokyo", "São Paulo", "Pluto", "Dallas"];
+let sampleData2 = ["10005", "Tokyo"];
 let sampleDataNotAllStrings = ["./weather New York", "10005", 10005, "São Paulo", "Pluto"];
 main(sampleData);
-main(sampleDataNotAllStrings);
+
